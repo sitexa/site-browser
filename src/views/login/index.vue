@@ -44,11 +44,11 @@
 </template>
 
 <script>
-  import {isvalidUsername} from '@/utils/validate'
+  import { isvalidUsername } from '@/utils/validate'
   import LangSelect from '@/components/LangSelect'
 
   export default {
-    components: {LangSelect},
+    components: { LangSelect },
     name: 'login',
     data() {
       const validateUsername = (rule, value, callback) => {
@@ -71,8 +71,8 @@
           password: '123456'
         },
         loginRules: {
-          username: [{required: true, trigger: 'blur', validator: validateUsername}],
-          password: [{required: true, trigger: 'blur', validator: validatePassword}]
+          username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+          password: [{ required: true, trigger: 'blur', validator: validatePassword }]
         },
         passwordType: 'password',
         loading: false,
@@ -93,14 +93,14 @@
             this.loading = true
             this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
               this.loading = false
-              this.$router.push({path: '/'})
+              this.$router.push({ path: '/' })
             }).catch(() => {
               this.loading = false
             })
           }
         })
-      },
-    },
+      }
+    }
   }
 </script>
 
