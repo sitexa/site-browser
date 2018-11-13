@@ -30,7 +30,6 @@ export default {
       method: 'get',
       params: { token }
     })
-  },
+  }
 
 }
-

@@ -8,13 +8,8 @@ export default {
   listRoleOptions() {
     return request({
       url: '/option/role',
-      method: 'get',
+      method: 'get'
     })
   }
 
 }
-
-
-
-
-

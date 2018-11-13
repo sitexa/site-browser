@@ -94,9 +94,6 @@ export default{
       url: '/sys_perm/list/btn_perm_map',
       method: 'get'
     })
-  },
-
+  }
 
 }
-
-

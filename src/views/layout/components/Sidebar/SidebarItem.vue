@@ -35,7 +35,6 @@
 
 <script>
 
-
 export default {
   name: 'SidebarItem',
   props: {
@@ -56,7 +55,7 @@ export default {
         return true
       }
       return false
-    },
+    }
   }
 }
 </script>

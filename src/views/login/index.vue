@@ -36,10 +36,7 @@
         <span style="margin-right:18px;">普通用户帐号 : zhangfei</span>
         <span>密码 : 123456</span>
       </div>
-
     </el-form>
-
-
   </div>
 </template>
 

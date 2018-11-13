@@ -6,11 +6,11 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
  * @param route 路由对象
  */
 function hasPermission(perms, route) {
-  //如果没有声明meta或者meta.perm，都视为可以公共访问的路由
+  // 如果没有声明meta或者meta.perm，都视为可以公共访问的路由
   if (!route.meta || !route.meta.perm) {
-    return true;
+    return true
   }
-  return perms.some(p=>p.val==route.meta.perm)
+  return perms.some(p => p.val === route.meta.perm)
 }
 
 /**
@@ -45,11 +45,10 @@ const permission = {
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-
         let accessedRouters
-        let perms = data.perms
+        const perms = data.perms
 
-        if(perms.some(p=>p.val=="*")) {
+        if (perms.some(p => p.val === '*')) {
           accessedRouters = asyncRouterMap
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, perms)
