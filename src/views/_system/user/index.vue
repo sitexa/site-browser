@@ -326,7 +326,7 @@
         userApi.updateUserRoles(this.updateUserRolesData).then(res => {
           const newRoles = this.updateUserRolesData.rids.map(rid => {
             const rname = this.roleMap.get(rid)
-            if (rname) return {rid, rname}
+            if (rname) return { rid, rname }
           })
           this.tableData[this.updateUserRolesData.idx].roleList = newRoles
           this.editRolesDialogVisible = false
