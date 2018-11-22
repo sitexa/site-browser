@@ -13,9 +13,9 @@
         <el-tag style="margin-right: 5px;" type="success" v-else v-for="r in roles" :key="r.val">{{r.name}}</el-tag>
       </div>
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
-        <div class="avatar-wrapper">
-          <img class="user-avatar" :src="avatar">
-          <i class="el-icon-caret-bottom"></i>
+        <div class="avatar-wrapper el-icon-setting">
+          <!--<img class="user-avatar" :src="avatar">
+          <i class="el-icon-caret-bottom"></i>-->
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/">
@@ -80,7 +80,7 @@ export default {
     const validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value != this.temp.pwd) {
+      } else if (value !== this.temp.pwd) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()

@@ -4,12 +4,14 @@
     <el-row>
       <el-input style="width:200px;" v-model="tableQuery.nick" placeholder="昵称"></el-input>
       <span style="margin-right: 15px;"></span>
-      <el-tooltip class="item" content="搜索" placement="top" >
+      <el-tooltip class="item" content="搜索" placement="top">
         <el-button icon="el-icon-search" circle @click="fetchData(1)" v-perm="'b:user:query'"></el-button>
       </el-tooltip>
     </el-row>
     <div style="margin-bottom: 30px;"></div>
-    <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleCreate" v-perm="'b:user:add'">{{textMap.create}}</el-button>
+    <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleCreate" v-perm="'b:user:add'">
+      {{textMap.create}}
+    </el-button>
     <div style="margin-bottom: 30px;"></div>
     <!--列表-->
     <el-table style="width: 100%"
@@ -27,35 +29,37 @@
       </el-table-column>
       <el-table-column prop="time" label="创建时间">
         <template slot-scope="scope">
-          <span v-text="parseTime(scope.row.created)"></span>
+          <span v-text="parseTime(scope.row.created,'{y}-{m}-{d}')"></span>
         </template>
       </el-table-column>
       <el-table-column prop="time" label="更新时间">
         <template slot-scope="scope">
-          <span v-text="parseTime(scope.row.updated)"></span>
+          <span v-text="parseTime(scope.row.updated,'{y}-{m}-{d}')"></span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-tooltip content="编辑" placement="top">
-            <el-button @click="handleUpdate(scope.$index,scope.row)" size="medium" type="info" icon="el-icon-edit" circle plain></el-button>
-          </el-tooltip>
-          <el-tooltip content="修改角色" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleUpdateUserRoles(scope.$index,scope.row)" size="medium" type="warning" icon="el-icon-star-off" circle plain></el-button>
-          </el-tooltip>
-          <el-tooltip content="删除" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleDelete(scope.$index,scope.row)" size="medium" type="danger" icon="el-icon-delete" circle plain></el-button>
-          </el-tooltip>
-          <el-popover trigger="hover" placement="top" v-else style="display: inline-block;">
-            <el-alert type="warning" :closable="false" title="权限说明">
-              <div>为保证管理员在系统中的最高权限</div>
-              <div>不允许编辑管理员自身的角色</div>
-              <div>不允许删除管理员账号</div>
-            </el-alert>
-            <div slot="reference" >
-              <el-tag style="margin-left: 10px;" type="info">权限说明</el-tag>
-            </div>
-          </el-popover>
+          <el-button-group>
+            <el-tooltip content="编辑" placement="top">
+              <el-button @click="handleUpdate(scope.$index,scope.row)" size="small" type="info" icon="el-icon-edit"></el-button>
+            </el-tooltip>
+            <el-tooltip content="修改角色" placement="top" v-if="!hasAdminRole(scope.row)">
+              <el-button @click="handleUpdateUserRoles(scope.$index,scope.row)" size="small" type="warning" icon="el-icon-star-off"></el-button>
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top" v-if="!hasAdminRole(scope.row)">
+              <el-button @click="handleDelete(scope.$index,scope.row)" size="small" type="danger" icon="el-icon-delete"></el-button>
+            </el-tooltip>
+            <el-popover trigger="hover" placement="top" v-else style="display: inline-block;">
+              <el-alert type="warning" :closable="false" title="权限说明">
+                <div>为保证管理员在系统中的最高权限</div>
+                <div>不允许编辑管理员自身的角色</div>
+                <div>不允许删除管理员账号</div>
+              </el-alert>
+              <div slot="reference">
+                <el-tag style="margin-left: 10px;" type="info">权限说明</el-tag>
+              </div>
+            </el-popover>
+          </el-button-group>
         </template>
       </el-table-column>
     </el-table>
@@ -322,7 +326,7 @@
         userApi.updateUserRoles(this.updateUserRolesData).then(res => {
           const newRoles = this.updateUserRolesData.rids.map(rid => {
             const rname = this.roleMap.get(rid)
-            if (rname) return { rid, rname }
+            if (rname) return {rid, rname}
           })
           this.tableData[this.updateUserRolesData.idx].roleList = newRoles
           this.editRolesDialogVisible = false
@@ -373,7 +377,7 @@
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .role-checkbox{
+  .role-checkbox {
     margin-left: 0px;
     margin-right: 15px;
   }
