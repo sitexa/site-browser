@@ -25,35 +25,37 @@
       <el-table-column prop="rval" label="角色值" ></el-table-column>
       <el-table-column prop="created" label="创建时间" >
         <template slot-scope="scope">
-          <span>{{parseTime(scope.row.created)}}</span>
+          <span>{{parseTime(scope.row.created,'{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="updated" label="更新时间" >
         <template slot-scope="scope">
-          <span>{{parseTime(scope.row.updated)}}</span>
+          <span>{{parseTime(scope.row.updated,'{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-tooltip content="编辑" placement="top">
-            <el-button @click="handleUpdate(scope.$index,scope.row)" size="medium" type="info" icon="el-icon-edit" circle plain></el-button>
-          </el-tooltip>
-          <el-tooltip content="修改权限" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleUpdateRolePerms(scope.$index,scope.row)" size="medium" type="warning" icon="el-icon-view" circle plain></el-button>
-          </el-tooltip>
-          <el-tooltip content="删除" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleDelete(scope.$index,scope.row)" size="medium" type="danger" icon="el-icon-delete" circle plain></el-button>
-          </el-tooltip>
-          <el-popover trigger="hover" placement="top" v-else style="display: inline-block;">
-            <el-alert type="warning" :closable="false" title="权限说明">
-              <div>为保证管理员在系统中的最高权限</div>
-              <div>不允许编辑管理员自身的权限</div>
-              <div>不允许删除管理员角色</div>
-            </el-alert>
-            <div slot="reference" >
-              <el-tag style="margin-left: 10px;" type="info">权限说明</el-tag>
-            </div>
-          </el-popover>
+          <el-button-group>
+            <el-tooltip content="编辑" placement="top">
+              <el-button @click="handleUpdate(scope.$index,scope.row)" size="small" type="info" icon="el-icon-edit"></el-button>
+            </el-tooltip>
+            <el-tooltip content="修改权限" placement="top" v-if="!hasAdminRole(scope.row)">
+              <el-button @click="handleUpdateRolePerms(scope.$index,scope.row)" size="small" type="warning" icon="el-icon-star-off"></el-button>
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top" v-if="!hasAdminRole(scope.row)">
+              <el-button @click="handleDelete(scope.$index,scope.row)" size="small" type="danger" icon="el-icon-delete"></el-button>
+            </el-tooltip>
+            <el-popover trigger="hover" placement="top" v-else style="display: inline-block;">
+              <el-alert type="warning" :closable="false" title="权限说明">
+                <div>为保证管理员在系统中的最高权限</div>
+                <div>不允许编辑管理员自身的权限</div>
+                <div>不允许删除管理员角色</div>
+              </el-alert>
+              <div slot="reference" >
+                <el-tag style="margin-left: 10px;" type="info">权限说明</el-tag>
+              </div>
+            </el-popover>
+          </el-button-group>
         </template>
       </el-table-column>
     </el-table>
