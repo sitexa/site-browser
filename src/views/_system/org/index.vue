@@ -130,7 +130,7 @@
 
   export default {
 
-    name: 'UserManage',
+    name: 'OrgManage',
 
     data() {
       const validateName = (rule, value, callback) => {

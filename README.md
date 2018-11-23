@@ -90,6 +90,3 @@ npm run lint
 # auto fix
 npm run lint -- --fix
 ```
-
-Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/#/deploy) for more information
-

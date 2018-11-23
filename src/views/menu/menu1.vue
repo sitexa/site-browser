@@ -28,26 +28,27 @@
       <el-table-column prop="rval" label="角色值"></el-table-column>
       <el-table-column prop="created" label="创建时间">
         <template slot-scope="scope">
-          <span>{{parseTime(scope.row.created)}}</span>
+          <span>{{parseTime(scope.row.created,'{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="updated" label="更新时间">
         <template slot-scope="scope">
-          <span>{{parseTime(scope.row.updated)}}</span>
+          <span>{{parseTime(scope.row.updated,'{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button-group size="mini">
           <el-tooltip content="编辑" placement="top">
-            <el-button @click="handleUpdate(scope.$index,scope.row)" size="medium" type="info" icon="el-icon-edit"
+            <el-button @click="handleUpdate(scope.$index,scope.row)" size="mini" type="info" icon="el-icon-edit"
                        circle plain></el-button>
           </el-tooltip>
           <el-tooltip content="修改权限" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleUpdateRolePerms(scope.$index,scope.row)" size="medium" type="warning"
+            <el-button @click="handleUpdateRolePerms(scope.$index,scope.row)" size="mini" type="warning"
                        icon="el-icon-view" circle plain></el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleDelete(scope.$index,scope.row)" size="medium" type="danger" icon="el-icon-delete"
+            <el-button @click="handleDelete(scope.$index,scope.row)" size="mini" type="danger" icon="el-icon-delete"
                        circle plain></el-button>
           </el-tooltip>
           <el-popover trigger="hover" placement="top" v-else style="display: inline-block;">
@@ -60,6 +61,7 @@
               <el-tag style="margin-left: 10px;" type="info">权限说明</el-tag>
             </div>
           </el-popover>
+          </el-button-group>
         </template>
       </el-table-column>
     </el-table>
@@ -107,7 +109,7 @@
     name: 'Menu1',
     data() {
       return {
-        pageName: '菜单1',
+        pageName: '{功能标题}',
         tableLoading: false,
         tableData: [],
         tableQuery: {
@@ -131,12 +133,12 @@
           updated: null
         },
         textMap: {
-          update: '编辑角色',
-          create: '新增角色'
+          update: '编辑记录',
+          create: '新增记录'
         },
         rules: {
-          rname: [{required: true, message: '必填', trigger: 'blur'}],
-          rval: [{required: true, message: '必填', trigger: 'blur'}]
+          rname: [{ required: true, message: '必填', trigger: 'blur' }],
+          rval: [{ required: true, message: '必填', trigger: 'blur' }]
         }
       }
     },
@@ -147,10 +149,10 @@
 
     watch: {
       // 延时查询
-      'tableQuery.rname': debounce(function () {
+      'tableQuery.rname': debounce(function() {
         this.fetchData()
       }, 500),
-      'tableQuery.rval': debounce(function () {
+      'tableQuery.rval': debounce(function() {
         this.fetchData()
       }, 500)
     }, // watch
@@ -203,13 +205,13 @@
 
       // 更新用户的角色
       handleUpdateRolePerms(idx, row) {
-        this.$router.push({path: '/system/role_manage/' + row.rid + '/assign_perm'})
+        this.$router.push({ path: '/system/role_manage/' + row.rid + '/assign_perm' })
       },
 
       // 删除
       handleDelete(idx, row) {
         this.$confirm('您确定要永久删除该用户？', '提示', confirm).then(() => {
-          roleApi.deleteRole({rid: row.rid}).then(res => {
+          roleApi.deleteRole({ rid: row.rid }).then(res => {
             this.tableData.splice(idx, 1)
             --this.tablePage.total
             this.dialogFormVisible = false

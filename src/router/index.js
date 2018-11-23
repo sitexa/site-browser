@@ -40,7 +40,7 @@ export const constantRouterMap = [
       path: 'dashboard',
       component: _import('dashboard/index'),
       name: 'dashboard',
-      meta: { title: '首页', icon: 'dashboard', noCache: true }
+      meta: { title: '后台管理', icon: 'dashboard', noCache: true }
     }]
   }
 ]
@@ -55,8 +55,14 @@ export const asyncRouterMap = [
   {
     path: '/system',
     component: Layout,
-    meta: { perm: 'm:sys', title: '系统', icon: 'chart' },
+    meta: { perm: 'm:sys', title: '系统管理', icon: 'chart' },
     children: [
+      {
+        path: 'org_manage',
+        name: 'org_manage',
+        component: _import('_system/org/index'),
+        meta: { perm: 'm:sys:role', title: '机构管理', icon: 'chart', noCache: true }
+      },
       {
         path: 'user_manage',
         name: 'user_manage',
@@ -89,23 +95,87 @@ export const asyncRouterMap = [
   {
     path: '/menu1',
     component: Layout,
-    children: [{
-      path: 'index',
-      name: 'menu1',
-      component: _import('menu/menu1'),
-      meta: { perm: 'm:menu1', title: '菜单1', icon: 'icon' }
-    }]
+    meta: { perm: 'm:menu1', title: '信息发布', icon: 'icon' },
+    children: [
+      {
+        path: 'index11',
+        name: 'menu11',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '概要信息', icon: 'icon' }
+      },
+      {
+        path: 'index12',
+        name: 'menu12',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '机构职能', icon: 'icon' }
+      },
+      {
+        path: 'index13',
+        name: 'menu13',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '负责人信息', icon: 'icon' }
+      },
+      {
+        path: 'index14',
+        name: 'menu14',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '文件资料', icon: 'icon' }
+      },
+      {
+        path: 'index15',
+        name: 'menu15',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '政务信息', icon: 'icon' }
+      },
+      {
+        path: 'index16',
+        name: 'menu16',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '信息公开', icon: 'icon' }
+      },
+      {
+        path: 'index17',
+        name: 'menu17',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '数据发布', icon: 'icon' }
+      },
+      {
+        path: 'index18',
+        name: 'menu18',
+        component: _import('menu/menu1'),
+        meta: { perm: 'm:menu1', title: '数据开放', icon: 'icon' }
+      }
+    ]
   },
 
   {
     path: '/menu2',
     component: Layout,
+    meta: { perm: 'm:menu2', title: '解读回应', icon: 'icon' },
     children: [
       {
-        path: 'index',
-        name: 'menu2',
+        path: 'index21',
+        name: 'menu21',
         component: _import('menu/menu2'),
-        meta: { perm: 'm:menu2', title: '菜单2', icon: 'icon' }
+        meta: { perm: 'm:menu2', title: '解读回应专访', icon: 'icon' }
+      },
+      {
+        path: 'index22',
+        name: 'menu22',
+        component: _import('menu/menu2'),
+        meta: { perm: 'm:menu2', title: '分类提炼精简', icon: 'icon' }
+      },
+      {
+        path: 'index23',
+        name: 'menu23',
+        component: _import('menu/menu2'),
+        meta: { perm: 'm:menu2', title: '转载传播增强', icon: 'icon' }
+      },
+      {
+        path: 'index24',
+        name: 'menu24',
+        component: _import('menu/menu2'),
+        meta: { perm: 'm:menu2', title: '及时准确主动', icon: 'icon' }
       }
     ]
   },
@@ -113,25 +183,37 @@ export const asyncRouterMap = [
   {
     path: '/menu3',
     component: Layout,
-    meta: { perm: 'm:menu3', title: '菜单3', icon: 'chart' },
+    meta: { perm: 'm:menu3', title: '办事服务', icon: 'chart' },
     children: [
       {
         path: 'menu3_1',
         component: _import('menu/menu3_1'),
         name: 'menu3_1',
-        meta: { perm: 'm:menu3:1', title: '菜单3-1', icon: 'chart', noCache: true }
+        meta: { perm: 'm:menu3:1', title: '服务事项目录', icon: 'chart', noCache: true }
       },
       {
         path: 'menu3_2',
         component: _import('menu/menu3_2'),
         name: 'menu3_2',
-        meta: { perm: 'm:menu3:2', title: '菜单3-2', icon: 'chart', noCache: true }
+        meta: { perm: 'm:menu3:2', title: '关联信息资源', icon: 'chart', noCache: true }
       },
       {
         path: 'menu3_3',
         component: _import('menu/menu3_3'),
         name: 'menu3_3',
-        meta: { perm: 'm:menu3:3', title: '菜单3-3', icon: 'chart', noCache: true }
+        meta: { perm: 'm:menu3:3', title: '统一在线服务', icon: 'chart', noCache: true }
+      },
+      {
+        path: 'menu3_4',
+        component: _import('menu/menu3_4'),
+        name: 'menu3_4',
+        meta: { perm: 'm:menu3:3', title: '精细化办事指南', icon: 'chart', noCache: true }
+      },
+      {
+        path: 'menu3_5',
+        component: _import('menu/menu3_5'),
+        name: 'menu3_5',
+        meta: { perm: 'm:menu3:3', title: '记录办事过程', icon: 'chart', noCache: true }
       }
     ]
   },
@@ -140,42 +222,49 @@ export const asyncRouterMap = [
     path: '/menu4',
     name: 'menu4',
     component: Layout,
-    redirect: '/menu4/menu4_1/a',
-    meta: { perm: 'm:menu4', title: '菜单4', icon: 'example' },
+    meta: { perm: 'm:menu4', title: '互动交流', icon: 'example' },
     children: [
       {
-        path: '/menu4/menu4_1',
+        path: 'menu4_1',
         name: 'menu4_1',
+        icon: 'tab',
         component: _import('menu/menu4_1/index'),
-        redirect: '/menu4/menu4_1/a',
-        meta: { perm: 'm:menu4:1', title: '菜单4-1', icon: 'table' },
-        children: [
-          {
-            path: 'a',
-            name: 'menu4_1_a',
-            component: _import('menu/menu4_1/a'),
-            meta: { perm: 'm:menu4:1:a', title: '菜单4-1-a' }
-          },
-          {
-            path: 'b',
-            name: 'menu4_1_b',
-            component: _import('menu/menu4_1/b'),
-            meta: { perm: 'm:menu4:1:b', title: '菜单4-1-b' }
-          },
-          {
-            path: 'c',
-            name: 'menu4_1_c',
-            component: _import('menu/menu4_1/c'),
-            meta: { perm: 'm:menu4:1:c', title: '菜单4-1-c' }
-          }
-        ]
+        meta: { perm: 'm:menu4:2', title: '统一建设互动交流', icon: 'table' }
       },
       {
-        path: 'menu4/menu4_2',
+        path: 'menu4_2',
         name: 'menu4_2',
         icon: 'tab',
         component: _import('menu/menu4_2/index'),
-        meta: { perm: 'm:menu4:2', title: '菜单4-2' }
+        meta: { perm: 'm:menu4:2', title: '数据汇聚统一处理', icon: 'table' }
+      },
+      {
+        path: 'menu4_3',
+        name: 'menu4_3',
+        icon: 'tab',
+        component: _import('menu/menu4_3/index'),
+        meta: { perm: 'm:menu4:2', title: '审核把关有序处理', icon: 'table' }
+      },
+      {
+        path: 'menu4_4',
+        name: 'menu4_4',
+        icon: 'tab',
+        component: _import('menu/menu4_4/index'),
+        meta: { perm: 'm:menu4:2', title: '认真客观处理回复', icon: 'table' }
+      },
+      {
+        path: 'menu4_5',
+        name: 'menu4_5',
+        icon: 'tab',
+        component: _import('menu/menu4_5/index'),
+        meta: { perm: 'm:menu4:2', title: '意见受理公开公布', icon: 'table' }
+      },
+      {
+        path: 'menu4_6',
+        name: 'menu4_6',
+        icon: 'tab',
+        component: _import('menu/menu4_6/index'),
+        meta: { perm: 'm:menu4:2', title: '形成更新知识库', icon: 'table' }
       }
     ]
   },
