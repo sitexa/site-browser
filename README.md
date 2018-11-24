@@ -90,3 +90,5 @@ npm run lint
 # auto fix
 npm run lint -- --fix
 ```
+
+# upgrade vue-element-admin to version 3.9.0
