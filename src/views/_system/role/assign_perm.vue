@@ -89,13 +89,12 @@
 </template>
 
 <script>
-
   import tree from '../tree'
-  import {parseTime, resetTemp} from '@/utils'
+  import { parseTime, resetTemp } from '@/utils'
   import permApi from '@/api/perm'
   import roleApi from '@/api/role'
-  import { permType, permTypeMap} from '@/utils/constants'
-  import {asyncRouterMap} from '@/router' //路由表，定义了菜单和按钮的元数据，可以用来生成权限控制的菜单按钮树
+  import { permType, permTypeMap } from '@/utils/constants'
+  import { asyncRouterMap } from '@/router' // 路由表，定义了菜单和按钮的元数据，可以用来生成权限控制的菜单按钮树
   import debounce from 'lodash/debounce'
 
   export default {
@@ -104,11 +103,11 @@
       return {
         permType,
 
-        //当前授权的角色
+        // 当前授权的角色
         roleId: null,
         role: {},
 
-        //节点过滤
+        // 节点过滤
         filterPlaceholderText: '输入权限名称、权限值过滤',
         filterMenuPermText: '',
         filterButtonPermText: '',
@@ -117,44 +116,44 @@
         roleMenuPermUpdateSum: 0,
         roleApiPermUpdateSum: 0,
 
-        //角色的权限值
+        // 角色的权限值
         roleMenuPvals: [],
         roleApiPvals: [],
-        roleBtnPvals:[],
+        roleBtnPvals: [],
 
-        menuPermissionTree: [],//菜单权限树
-        buttonPermissionTree: [],//按钮权限树
-        apiPermissionTree: [],//菜单权限树
-        //挂载到按钮权限树的按钮权限数据。由于按钮权限在菜单权限下，key是菜单权限值，value是按钮权限
-        btnPermMap:{},
+        menuPermissionTree: [], // 菜单权限树
+        buttonPermissionTree: [], // 按钮权限树
+        apiPermissionTree: [], // 菜单权限树
+        // 挂载到按钮权限树的按钮权限数据。由于按钮权限在菜单权限下，key是菜单权限值，value是按钮权限
+        btnPermMap: {},
 
         treeProps: {
           label: 'pname',
           children: 'children'
-        },
+        }
       }
     },
 
-    computed:{
-      btnCheckboxMap(){
-        let map = {}
-        this.roleBtnPvals.forEach(pval=>{
+    computed: {
+      btnCheckboxMap() {
+        const map = {}
+        this.roleBtnPvals.forEach(pval => {
           map[pval] = true
         })
-        return map;
-      },
+        return map
+      }
     },
 
     watch: {
-      'filterMenuPermText': debounce(function (val) {
-        this.$refs.menuPermTreeRef.filter(val);
+      'filterMenuPermText': debounce(function(val) {
+        this.$refs.menuPermTreeRef.filter(val)
       }, 600),
-      'filterButtonPermText': debounce(function (val) {
-        this.$refs.buttonPermTreeRef.filter(val);
+      'filterButtonPermText': debounce(function(val) {
+        this.$refs.buttonPermTreeRef.filter(val)
       }, 600),
-      'filterApiPermText': debounce(function (val) {
-        this.$refs.apiPermTreeRef.filter(val);
-      }, 600),
+      'filterApiPermText': debounce(function(val) {
+        this.$refs.apiPermTreeRef.filter(val)
+      }, 600)
     },
 
     created() {
@@ -163,42 +162,41 @@
 
     methods: {
 
-      //获取后台权限数据
+      // 获取后台权限数据
       initData() {
-        //获取路由中的角色id
+        // 获取路由中的角色id
         this.roleId = this.$route.params.roleId
-        //显示菜单权限树
+        // 显示菜单权限树
         this.menuPermissionTree = tree.generateMenuPermissionTree()
-        //显示按钮权限树
-        let menuPermissionTreeCopy = tree.generateMenuPermissionTree()
+        // 显示按钮权限树
+        const menuPermissionTreeCopy = tree.generateMenuPermissionTree()
         this.generateButtonPermissionTree(menuPermissionTreeCopy)
-        //显示接口权限树
+        // 显示接口权限树
         this.loadApiButtonPermissionTree()
-        //加载角色的权限
+        // 加载角色的权限
         this.loadRolePerms()
       },
 
       /**
        * 加载角色的权限并回显
        */
-      loadRolePerms(){
-        if(!this.roleId){
+      loadRolePerms() {
+        if (!this.roleId) {
           this.$message.error('无法显示角色的权限信息：找不到角色id')
-          return;
+          return
         }
-        roleApi.findRolePerms(this.roleId).then(res=>{
-          if(res.data.menuPvals.length>0){
+        roleApi.findRolePerms(this.roleId).then(res => {
+          if (res.data.menuPvals.length > 0) {
             this.roleMenuPvals = res.data.menuPvals
             this.$refs.menuPermTreeRef.setCheckedKeys(res.data.menuPvals)
           }
-          if(res.data.apiPvals.length>0){
+          if (res.data.apiPvals.length > 0) {
             this.roleApiPvals = res.data.menuPvals
             this.$refs.apiPermTreeRef.setCheckedKeys(res.data.apiPvals)
-
           }
-          //用于回显角色的按钮权限
+          // 用于回显角色的按钮权限
           this.roleBtnPvals = res.data.btnPvals
-          //显示当前编辑的角色
+          // 显示当前编辑的角色
           this.role = res.data.role
         })
       },
@@ -207,57 +205,52 @@
        * 过滤节点
        */
       filterNode(value, data) {
-        if (!value) return true;
-        return data.pname.indexOf(value) !== -1 || data.pval.indexOf(value) !== -1 ;
+        if (!value) return true
+        return data.pname.indexOf(value) !== -1 || data.pval.indexOf(value) !== -1
       },
 
-      /////////////////////////// 接口权限树
+      // ///////////////////////// 接口权限树
 
       /**
        * 从服务器端加载接口权限树
        */
-      loadApiButtonPermissionTree(){
-        permApi.listApiPermMetadata().then(res=>{
+      loadApiButtonPermissionTree() {
+        permApi.listApiPermMetadata().then(res => {
           this.apiPermissionTree = res.data.apiList
         })
       },
 
-      /////////////////////////// 按钮权限树
+      // ///////////////////////// 按钮权限树
 
       /**
        * 递归生成按钮权限树
        */
       generateButtonPermissionTree(menuPermissionTreeCopy) {
-        permApi.listBtnPermGroupByParent().then(res=>{
+        permApi.listBtnPermGroupByParent().then(res => {
           this.btnPermMap = res.data.btnPermMap || {}
-          this.buttonPermissionTree = tree.mapToButtonPermissionTree(this.btnPermMap,menuPermissionTreeCopy)
+          this.buttonPermissionTree = tree.mapToButtonPermissionTree(this.btnPermMap, menuPermissionTreeCopy)
         })
-
       },
-
-
-
-
 
       /**
        * 更新角色的按钮权限
        * @param checked
        */
-      handleUpdateBtnPermForRole(checked,pval){
-        let data = {
+      handleUpdateBtnPermForRole(checked, pval) {
+        const data = {
           rid: this.roleId,
           pval: pval,
           ptype: permType.BUTTON
         }
-        if(checked){
-          roleApi.addRolePerm(data).then(()=>{
+        if (checked) {
+          roleApi.addRolePerm(data).then(() => {
             this.roleBtnPvals.unshift(pval)
             this.$message.success('添加按钮权限成功')
           })
-        }else{
-          roleApi.deleteRolePerm(data).then(()=>{
-            let index = this.roleBtnPvals.findIndex(btnPval=>btnPval==pval)
-            this.roleBtnPvals.splice(index,1)
+        } else {
+          roleApi.deleteRolePerm(data).then(() => {
+            const index = this.roleBtnPvals.findIndex(btnPval => btnPval == pval)
+            this.roleBtnPvals.splice(index, 1)
             this.$message.success('删除按钮权限成功')
           })
         }
@@ -266,44 +259,44 @@
       /**
        * 更新角色的菜单权限
        */
-      handleUpdateMenuPermForRole: debounce(function(){
-        this.roleMenuPermUpdateSum++;
-        //因为初始化勾选角色的权限会触发一次，但这次的权限数据跟后台是一样的，所以不需要触发更新角色的权限
-        if(this.roleMenuPvals.length>0 && this.roleMenuPermUpdateSum==1) return;
-        let checkedNodes = this.$refs.menuPermTreeRef.getCheckedNodes();
-        let halfCheckedNodes = this.$refs.menuPermTreeRef.getHalfCheckedNodes();
-        let pvals = [...checkedNodes,...halfCheckedNodes].map(perm=>perm.pval)
-        //发送请求更新角色的权限
-        let data = {
+      handleUpdateMenuPermForRole: debounce(function() {
+        this.roleMenuPermUpdateSum++
+        // 因为初始化勾选角色的权限会触发一次，但这次的权限数据跟后台是一样的，所以不需要触发更新角色的权限
+        if (this.roleMenuPvals.length > 0 && this.roleMenuPermUpdateSum == 1) return
+        const checkedNodes = this.$refs.menuPermTreeRef.getCheckedNodes()
+        const halfCheckedNodes = this.$refs.menuPermTreeRef.getHalfCheckedNodes()
+        const pvals = [...checkedNodes, ...halfCheckedNodes].map(perm => perm.pval)
+        // 发送请求更新角色的权限
+        const data = {
           rid: this.roleId,
           ptype: permType.MENU,
           pvals: pvals
         }
-        roleApi.updateRolePerms(data).then(res=>{
+        roleApi.updateRolePerms(data).then(res => {
           this.$message.success('更新菜单权限成功')
         })
-      },500),
+      }, 500),
 
       /**
        * 更新角色的接口权限
        */
-      handleUpdateApiPermForRole: debounce(function(){
-        this.roleApiPermUpdateSum++;
-        //因为初始化勾选角色的权限会触发一次，但这次的权限数据跟后台是一样的，所以不需要触发更新角色的权限
-        if(this.roleApiPvals.length>0 && this.roleApiPermUpdateSum==1) return;
-        let checkedNodes = this.$refs.apiPermTreeRef.getCheckedNodes();
-        let halfCheckedNodes = this.$refs.apiPermTreeRef.getHalfCheckedNodes();
-        let pvals = [...checkedNodes,...halfCheckedNodes].map(perm=>perm.pval)
-        //发送请求更新角色的权限
-        let data = {
+      handleUpdateApiPermForRole: debounce(function() {
+        this.roleApiPermUpdateSum++
+        // 因为初始化勾选角色的权限会触发一次，但这次的权限数据跟后台是一样的，所以不需要触发更新角色的权限
+        if (this.roleApiPvals.length > 0 && this.roleApiPermUpdateSum == 1) return
+        const checkedNodes = this.$refs.apiPermTreeRef.getCheckedNodes()
+        const halfCheckedNodes = this.$refs.apiPermTreeRef.getHalfCheckedNodes()
+        const pvals = [...checkedNodes, ...halfCheckedNodes].map(perm => perm.pval)
+        // 发送请求更新角色的权限
+        const data = {
           rid: this.roleId,
           ptype: permType.API,
           pvals: pvals
         }
-        roleApi.updateRolePerms(data).then(res=>{
+        roleApi.updateRolePerms(data).then(res => {
           this.$message.success('更新接口权限成功')
         })
-      },500),
+      }, 500)
 
     }
   }

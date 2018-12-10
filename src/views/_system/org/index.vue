@@ -132,16 +132,15 @@
 </template>
 
 <script>
-
   import tree from '../tree'
-  import {parseTime, resetTemp} from '@/utils'
+  import { parseTime, resetTemp } from '@/utils'
   import permApi from '@/api/perm'
   import {
     confirm,
     permType,
     permTypeMap
   } from '@/utils/constants'
-  import {asyncRouterMap} from '@/router' //路由表，定义了菜单和按钮的元数据，可以用来生成权限控制的菜单按钮树
+  import { asyncRouterMap } from '@/router' // 路由表，定义了菜单和按钮的元数据，可以用来生成权限控制的菜单按钮树
   import debounce from 'lodash/debounce'
 
   export default {
@@ -156,19 +155,17 @@
         menuPermValSet: new Set(),
         apiPermValSet: new Set(),
 
-        btnPermMap:{},//按parent字段分组的map
+        btnPermMap: {}, // 按parent字段分组的map
 
-        menuPermissionTree: [],//菜单权限树
-        buttonPermissionTree: [],//菜单权限树
-        apiPermissionTree: [],//菜单权限树
+        menuPermissionTree: [], // 菜单权限树
+        buttonPermissionTree: [], // 菜单权限树
+        apiPermissionTree: [], // 菜单权限树
 
         filterMenuPermText: '',
         filterButtonPermText: '',
         filterApiPermText: '',
 
         permType,
-
-
 
         treeProps: {
           label: 'pname',
@@ -180,7 +177,7 @@
         textMap: {
           addButton: '添加按钮权限',
           updateButton: '更新按钮权限',
-          deleteButton: '删除按钮权限',
+          deleteButton: '删除按钮权限'
         },
         temp: {
           idx: null,
@@ -192,22 +189,22 @@
           parent: null
         },
         rules: {
-          pname: [{required: true, message: '必填', trigger: 'blur'}],
-          ptype: [{required: true, message: '必填', trigger: 'blur'}],
-          pval: [{required: true, message: '必填', trigger: 'change'}]
-        },
+          pname: [{ required: true, message: '必填', trigger: 'blur' }],
+          ptype: [{ required: true, message: '必填', trigger: 'blur' }],
+          pval: [{ required: true, message: '必填', trigger: 'change' }]
+        }
       }
     },
     watch: {
-      'filterMenuPermText': debounce(function (val) {
-        this.$refs.menuPermTreeRef.filter(val);
+      'filterMenuPermText': debounce(function(val) {
+        this.$refs.menuPermTreeRef.filter(val)
       }, 600),
-      'filterButtonPermText': debounce(function (val) {
-        this.$refs.buttonPermTreeRef.filter(val);
+      'filterButtonPermText': debounce(function(val) {
+        this.$refs.buttonPermTreeRef.filter(val)
       }, 600),
-      'filterApiPermText': debounce(function (val) {
-        this.$refs.apiPermTreeRef.filter(val);
-      }, 600),
+      'filterApiPermText': debounce(function(val) {
+        this.$refs.apiPermTreeRef.filter(val)
+      }, 600)
     },
 
     created() {
@@ -216,25 +213,25 @@
 
     methods: {
 
-      //获取后台权限数据
+      // 获取后台权限数据
       initData() {
         permApi.listAllPermissions().then(res => {
-          //按parent分组的按钮权限
+          // 按parent分组的按钮权限
           this.btnPermMap = res.data.btnPermMap || {}
-          //含有所有权限map，key是ptype
-          let permMap = res.data.permMap || {}
-          //后台存储的所有菜单权限，用于比较前后台数据是否同步
-          let menuPermList = permMap[permType.MENU] || []
-          this.menuPermValSet = new Set(menuPermList.map(p=>p.pval))
-          //后台存储的所有接口权限，用于比较数据是否同步
-          let apiPermList = permMap[permType.API] || []
-          this.apiPermValSet = new Set(apiPermList.map(p=>p.pval))
-          //显示菜单权限树
+          // 含有所有权限map，key是ptype
+          const permMap = res.data.permMap || {}
+          // 后台存储的所有菜单权限，用于比较前后台数据是否同步
+          const menuPermList = permMap[permType.MENU] || []
+          this.menuPermValSet = new Set(menuPermList.map(p => p.pval))
+          // 后台存储的所有接口权限，用于比较数据是否同步
+          const apiPermList = permMap[permType.API] || []
+          this.apiPermValSet = new Set(apiPermList.map(p => p.pval))
+          // 显示菜单权限树
           this.menuPermissionTree = tree.generateMenuPermissionTree()
-          //显示按钮权限树
-          let menuPermissionTreeCopy = tree.generateMenuPermissionTree()
+          // 显示按钮权限树
+          const menuPermissionTreeCopy = tree.generateMenuPermissionTree()
           this.buttonPermissionTree = this.generateButtonPermissionTree(menuPermissionTreeCopy)
-          //显示接口权限树
+          // 显示接口权限树
           this.loadApiButtonPermissionTree()
         })
       },
@@ -243,30 +240,30 @@
        * 过滤节点
        */
       filterNode(value, data) {
-        if (!value) return true;
-        return data.pname.indexOf(value) !== -1 || data.pval.indexOf(value) !== -1 ;
+        if (!value) return true
+        return data.pname.indexOf(value) !== -1 || data.pval.indexOf(value) !== -1
       },
 
       /**
        * 添加按钮权限
        */
       handleAddButton(data) {
-        this.dialogStatus = 'addButton';
+        this.dialogStatus = 'addButton'
         resetTemp(this.temp)
-        this.temp.ptype = permType.BUTTON;
+        this.temp.ptype = permType.BUTTON
         this.temp.parent = data.pval
         this.dialogFormVisible = true
         this.$nextTick(() => this.$refs['dataForm'].clearValidate())
       },
       addButton() {
         this.$refs['dataForm'].validate((valid) => {
-          if (!valid) return;
-          const data = Object.assign({}, this.temp)//copy obj
+          if (!valid) return
+          const data = Object.assign({}, this.temp)// copy obj
           data.pval = this.btnPermPrefix + data.pval
           permApi.addPerm(data).then(() => {
             this.dialogFormVisible = false
             this.initData()
-            this.$message.success("添加按钮权限成功")
+            this.$message.success('添加按钮权限成功')
           })
         })
       },
@@ -275,19 +272,19 @@
        * 更新按钮权限
        */
       handleUpdateButton(data) {
-        this.dialogStatus = 'updateButton';
+        this.dialogStatus = 'updateButton'
         this.temp = Object.assign({}, data) // copy obj
         this.dialogFormVisible = true
         this.$nextTick(() => this.$refs['dataForm'].clearValidate())
       },
       updateButton() {
         this.$refs['dataForm'].validate((valid) => {
-          if (!valid) return;
-          const data = Object.assign({}, this.temp)//copy obj
+          if (!valid) return
+          const data = Object.assign({}, this.temp)// copy obj
           permApi.updatePerm(data).then(res => {
             this.dialogFormVisible = false
             this.initData()
-            this.$message.success("更新按钮权限成功")
+            this.$message.success('更新按钮权限成功')
           })
         })
       },
@@ -297,20 +294,20 @@
        */
       handleDeleleButton(data) {
         this.$confirm('您确定要永久删除该权限？', '提示', confirm).then(() => {
-          permApi.deletePerm({pval: data.pval}).then(() => {
+          permApi.deletePerm({ pval: data.pval }).then(() => {
             this.initData()
-            this.$message.success("删除按钮权限成功")
+            this.$message.success('删除按钮权限成功')
           })
         }).catch(() => {
-          this.$message({type: 'info', message: '已取消删除'});
-        });
+          this.$message({ type: 'info', message: '已取消删除' })
+        })
       },
 
       /**
        * 从服务器端加载接口权限树
        */
-      loadApiButtonPermissionTree(){
-        permApi.listApiPermMetadata().then(res=>{
+      loadApiButtonPermissionTree() {
+        permApi.listApiPermMetadata().then(res => {
           this.apiPermissionTree = res.data.apiList
         })
       },
@@ -319,33 +316,18 @@
        * 递归生成按钮权限树
        */
       generateButtonPermissionTree(menuPermissionTreeCopy) {
-        return tree.mapToButtonPermissionTree(this.btnPermMap,menuPermissionTreeCopy)
+        return tree.mapToButtonPermissionTree(this.btnPermMap, menuPermissionTreeCopy)
       },
 
-
-
-
-
-
-
-      ////////////////普通用户修改密码的页面和接口！！！！
-
-
-
-
-
-
-
-
-
+      // //////////////普通用户修改密码的页面和接口！！！！
 
       /**
        * 同步菜单权限数据
        */
       handleSyncMenuPermissionData() {
-        let list = []
+        const list = []
         this.permissionTreeToList(list, this.menuPermissionTree)
-        permApi.syncMenuPerms(list).then(res=>{
+        permApi.syncMenuPerms(list).then(res => {
           this.initData()
           this.$message.success('菜单权限数据同步成功')
         })
@@ -355,14 +337,12 @@
        * 同步接口权限数据
        */
       handleSyncApiPermissionData() {
-
-        let list = []
+        const list = []
         this.permissionTreeToList(list, this.apiPermissionTree)
-        permApi.syncApiPerms(list).then(res=>{
+        permApi.syncApiPerms(list).then(res => {
           this.initData()
           this.$message.success('接口权限数据同步成功')
         })
-
       },
 
       /**
@@ -370,17 +350,17 @@
        */
       permissionTreeToList(list, tree) {
         tree.forEach(perm => {
-          let temp = Object.assign({}, perm)
+          const temp = Object.assign({}, perm)
           temp.children = []
           if (perm.children && perm.children.length > 0) {
             temp.leaf = false
             this.permissionTreeToList(list, perm.children)
-          }else{
+          } else {
             temp.leaf = true
           }
           list.push(temp)
         })
-      },
+      }
 
     }
   }

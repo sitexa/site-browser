@@ -15,12 +15,12 @@
  *        }
  * }
  * */
-export const pageParamNames = ["current","pages","size","total"]
+export const pageParamNames = ['current', 'pages', 'size', 'total']
 
 export const permType = {
   MENU: 1,
   BUTTON: 2,
-  API: 3,
+  API: 3
 }
 
 /**
@@ -28,9 +28,9 @@ export const permType = {
  *
  */
 export const permTypeOptions = [
-  {value: permType.MENU, label: '菜单'},
-  {value: permType.BUTTON, label: '按钮'},
-  {value: permType.API, label: '接口'}
+  { value: permType.MENU, label: '菜单' },
+  { value: permType.BUTTON, label: '按钮' },
+  { value: permType.API, label: '接口' }
 ]
 
 /**
@@ -38,12 +38,12 @@ export const permTypeOptions = [
  * @type {Map<any, any>}
  */
 export const permTypeMap = new Map([
-  [permType.MENU,'菜单'],
-  [permType.BUTTON,'按钮'],
-  [permType.API,'测试']
+  [permType.MENU, '菜单'],
+  [permType.BUTTON, '按钮'],
+  [permType.API, '测试']
 ])
 
-export const confirm = { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'}
+export const confirm = { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
 
 export const root = {
   rval: 'root',

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message,MessageBox } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import Code from '@/utils/code'
@@ -8,7 +8,7 @@ import Code from '@/utils/code'
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
   timeout: 5000, // request timeout
-  withCredentials: true //使前台能够保存cookie
+  withCredentials: true // 使前台能够保存cookie
 })
 
 // request interceptor
@@ -32,23 +32,23 @@ service.interceptors.response.use(
    * 如通过xmlhttprequest 状态码标识 逻辑可写在下面error中
    */
   res => {
-    if(res.data.succ){
-      //如果后台返回的json显示成功，pass
-      return res;
-    }else{
-      if(res.data.code == Code.UNAUTHEN || res.data.code == Code.SESSION_TIMOUT){
-        //处理登录相关的错误
+    if (res.data.succ) {
+      // 如果后台返回的json显示成功，pass
+      return res
+    } else {
+      if (res.data.code == Code.UNAUTHEN || res.data.code == Code.SESSION_TIMOUT) {
+        // 处理登录相关的错误
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出',
-          {confirmButtonText: '重新登录',cancelButtonText: '取消',type: 'warning'}).then(() => {
+          { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
           store.dispatch('FedLogOut').then(() => {
-            location.reload();// 为了重新实例化vue-router对象 避免bug
-          });
+            location.reload()// 为了重新实例化vue-router对象 避免bug
+          })
         })
-      }else{
-        //其它错误弹出错误信息
-        Message({ message: res.data.msg, type: 'error', duration: 5000});
+      } else {
+        // 其它错误弹出错误信息
+        Message({ message: res.data.msg, type: 'error', duration: 5000 })
       }
-      return Promise.reject('error');
+      return Promise.reject('error')
     }
   },
 
@@ -57,7 +57,7 @@ service.interceptors.response.use(
    */
   err => {
     console.error('request err: %o', err)// for debug
-    Message({message: error.message,type: 'error',duration: 5000})
+    Message({ message: error.message, type: 'error', duration: 5000 })
     return Promise.reject(error)
   }
 

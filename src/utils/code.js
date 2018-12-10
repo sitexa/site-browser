@@ -4,7 +4,7 @@ export default {
   SUCC: 1,
 
   /** 失败 */
-  FAIL:-1,
+  FAIL: -1,
 
   /** 未登录 */
   UNAUTHEN: 4401,

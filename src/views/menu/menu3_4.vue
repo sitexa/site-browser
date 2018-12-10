@@ -6,10 +6,10 @@
 
 <script>
   export default {
-    name: 'Menu3_3',
+    name: 'Menu3_5',
     data() {
       return {
-        pageName: '菜单3-3'
+        pageName: '菜单3-5'
       }
     }
   }

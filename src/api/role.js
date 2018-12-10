@@ -33,7 +33,7 @@ export default {
    * @param queryParam
    * @param pageParam
    */
-  queryRole(queryParam,pageParam) {
+  queryRole(queryParam, pageParam) {
     return request({
       url: '/sys_role/query',
       method: 'post',
@@ -99,7 +99,7 @@ export default {
    */
   findRolePerms(rid) {
     return request({
-      url: '/sys_role/'+rid+'/perms',
+      url: '/sys_role/' + rid + '/perms',
       method: 'get'
     })
   }

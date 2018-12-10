@@ -5,7 +5,7 @@ import request from '@/utils/request'
 
 export default {
 
-  queryUser(queryParam,pageParam) {
+  queryUser(queryParam, pageParam) {
     return request({
       url: '/sys_user/query',
       method: 'post',
