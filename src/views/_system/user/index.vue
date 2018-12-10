@@ -27,24 +27,24 @@
       </el-table-column>
       <el-table-column prop="time" label="创建时间">
         <template slot-scope="scope">
-          <span v-text="parseTime(scope.row.created)"></span>
+          <span v-text="parseTime(scope.row.created,'{y}-{m}-{d}')"></span>
         </template>
       </el-table-column>
       <el-table-column prop="time" label="更新时间">
         <template slot-scope="scope">
-          <span v-text="parseTime(scope.row.updated)"></span>
+          <span v-text="parseTime(scope.row.updated,'{y}-{m}-{d}')"></span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-tooltip content="编辑" placement="top">
-            <el-button @click="handleUpdate(scope.$index,scope.row)" size="medium" type="info" icon="el-icon-edit" circle plain></el-button>
+            <el-button @click="handleUpdate(scope.$index,scope.row)" size="mini" type="info" icon="el-icon-edit" circle plain></el-button>
           </el-tooltip>
           <el-tooltip content="修改角色" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleUpdateUserRoles(scope.$index,scope.row)" size="medium" type="warning" icon="el-icon-star-off" circle plain></el-button>
+            <el-button @click="handleUpdateUserRoles(scope.$index,scope.row)" size="mini" type="warning" icon="el-icon-star-off" circle plain></el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top" v-if="!hasAdminRole(scope.row)">
-            <el-button @click="handleDelete(scope.$index,scope.row)" size="medium" type="danger" icon="el-icon-delete" circle plain></el-button>
+            <el-button @click="handleDelete(scope.$index,scope.row)" size="mini" type="danger" icon="el-icon-delete" circle plain></el-button>
           </el-tooltip>
           <el-popover trigger="hover" placement="top" v-else style="display: inline-block;">
             <el-alert type="warning" :closable="false" title="权限说明">
@@ -130,7 +130,7 @@
 
     data() {
       const validateName = (rule, value, callback) => {
-        if (this.dialogStatus == 'create' && value === '') {
+        if (this.dialogStatus === 'create' && value === '') {
           callback(new Error('必填'))
         } else {
           callback()
@@ -151,7 +151,7 @@
       const validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'))
-        } else if (value != this.temp.pwd) {
+        } else if (value !== this.temp.pwd) {
           callback(new Error('两次输入密码不一致!'))
         } else {
           callback()
@@ -225,7 +225,7 @@
         // 所有角色选项
         optionApi.listRoleOptions().then(res => {
           res.data.options.forEach(obj => {
-            if (obj.val2 != root.rval) { // 排除管理员
+            if (obj.val2 !== root.rval) { // 排除管理员
               this.roleOptions.push(obj)
               this.roleMap.set(obj.id, obj.val)
             }
@@ -235,7 +235,7 @@
 
       hasAdminRole(row) {
         if (row && row.roleList) {
-          return row.roleList.some(role => role.rval == root.rval)
+          return row.roleList.some(role => role.rval === root.rval)
         }
         return false
       },
@@ -306,7 +306,7 @@
       },
 
       checkUpdateUserRolesData() {
-        const noRolesSelected = this.updateUserRolesData && this.updateUserRolesData.rids && this.updateUserRolesData.rids.length == 0
+        const noRolesSelected = this.updateUserRolesData && this.updateUserRolesData.rids && this.updateUserRolesData.rids.length === 0
         if (noRolesSelected) {
           this.$confirm('当前没有选中任何角色，会清除该用户已有的角色, 是否继续?', '提示', confirm).then(() => {
             this.invokeUpdateUserRolesApi()

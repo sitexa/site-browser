@@ -49,12 +49,12 @@
                    :props="treeProps" node-key="pid" default-expand-all :expand-on-click-node="false">
             <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>
-                  <el-checkbox v-if="data.ptype==permType.BUTTON" v-model="btnCheckboxMap[data.pval]"
+                  <el-checkbox v-if="data.ptype===permType.BUTTON" v-model="btnCheckboxMap[data.pval]"
                                @change="(checked)=>{handleUpdateBtnPermForRole(checked,data.pval)}"></el-checkbox>
                   <span class="mgl-10">{{ data.pname }}</span>
                   <span class="mgl-10 tips-text">{{ data.pval }}</span>
-                  <el-tag class="mgl-10" v-if="data.ptype==permType.MENU" type="success" size="mini">菜单</el-tag>
-                  <el-tag class="mgl-10" v-else-if="data.ptype==permType.BUTTON" type="warning" size="mini">按钮</el-tag>
+                  <el-tag class="mgl-10" v-if="data.ptype===permType.MENU" type="success" size="mini">菜单</el-tag>
+                  <el-tag class="mgl-10" v-else-if="data.ptype===permType.BUTTON" type="warning" size="mini">按钮</el-tag>
                 </span>
             </span>
           </el-tree>
@@ -249,7 +249,7 @@
           })
         } else {
           roleApi.deleteRolePerm(data).then(() => {
-            const index = this.roleBtnPvals.findIndex(btnPval => btnPval == pval)
+            const index = this.roleBtnPvals.findIndex(btnPval => btnPval === pval)
             this.roleBtnPvals.splice(index, 1)
             this.$message.success('删除按钮权限成功')
           })
@@ -262,7 +262,7 @@
       handleUpdateMenuPermForRole: debounce(function() {
         this.roleMenuPermUpdateSum++
         // 因为初始化勾选角色的权限会触发一次，但这次的权限数据跟后台是一样的，所以不需要触发更新角色的权限
-        if (this.roleMenuPvals.length > 0 && this.roleMenuPermUpdateSum == 1) return
+        if (this.roleMenuPvals.length > 0 && this.roleMenuPermUpdateSum === 1) return
         const checkedNodes = this.$refs.menuPermTreeRef.getCheckedNodes()
         const halfCheckedNodes = this.$refs.menuPermTreeRef.getHalfCheckedNodes()
         const pvals = [...checkedNodes, ...halfCheckedNodes].map(perm => perm.pval)
@@ -283,7 +283,7 @@
       handleUpdateApiPermForRole: debounce(function() {
         this.roleApiPermUpdateSum++
         // 因为初始化勾选角色的权限会触发一次，但这次的权限数据跟后台是一样的，所以不需要触发更新角色的权限
-        if (this.roleApiPvals.length > 0 && this.roleApiPermUpdateSum == 1) return
+        if (this.roleApiPvals.length > 0 && this.roleApiPermUpdateSum === 1) return
         const checkedNodes = this.$refs.apiPermTreeRef.getCheckedNodes()
         const halfCheckedNodes = this.$refs.apiPermTreeRef.getHalfCheckedNodes()
         const pvals = [...checkedNodes, ...halfCheckedNodes].map(perm => perm.pval)

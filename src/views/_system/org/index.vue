@@ -1,130 +1,116 @@
 <template>
   <div class="app-container">
-
-    <el-row :gutter="20">
-
-      <!--菜单权限树-->
-      <el-col :span="8">
-        <el-card class="box-card">
-          <div slot="header">
-            <div class="title-box">
-              <span><el-tag type="success" >菜单</el-tag>&nbsp;权限元数据</span>
-              <el-tooltip content="同步菜单权限数据" placement="top">
-                <el-button style="font-size: 25px;" type="text" @click="handleSyncMenuPermissionData" icon="el-icon-refresh" circle></el-button>
-              </el-tooltip>
-            </div>
-            <span class="tips-text">提示：菜单权限由页面路由定义，不提供任何编辑功能，只能执行将权限数据同步到数据库的操作。
-              菜单权限值建议使用前缀&nbsp;<el-tag size="mini" type="success">m:</el-tag>
-            </span>
-          </div>
-          <el-input class="mgb-15" :placeholder="filterPlaceholderText" v-model="filterMenuPermText"></el-input>
-          <el-tree ref="menuPermTreeRef" :filter-node-method="filterNode" :data="menuPermissionTree"
-                   :props="treeProps" node-key="pval" default-expand-all :expand-on-click-node="false">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>
-                <span class="mgl-10">{{ data.pname }}</span>
-                <span class="mgl-10 tips-text">{{ data.pval }}</span>
-                <el-tag class="mgl-10" type="success" size="mini">菜单</el-tag>
-                <el-tag v-if="!menuPermValSet.has(data.pval)" class="mgl-10" type="danger" size="mini">未同步</el-tag>
-              </span>
-            </span>
-          </el-tree>
-        </el-card>
-      </el-col>
-
-      <!--按钮权限树-->
-      <el-col :span="8">
-        <el-card class="box-card">
-          <div slot="header">
-            <div class="title-box" style="padding-top: 10px; padding-bottom: 13px;">
-              <span><el-tag type="warning" >按钮</el-tag>&nbsp;权限元数据</span>
-            </div>
-            <span class="tips-text">提示：按钮权限是依附在菜单权限下的，这样能帮助您更好区分相似的按钮权限。
-              按钮权限值建议使用前缀&nbsp;<el-tag size="mini" type="warning">b:</el-tag>
-            </span>
-          </div>
-          <el-input class="mgb-15" :placeholder="filterPlaceholderText" v-model="filterButtonPermText"></el-input>
-          <el-tree ref="buttonPermTreeRef" :filter-node-method="filterNode" :data="buttonPermissionTree"
-                   :props="treeProps" node-key="pval" default-expand-all :expand-on-click-node="false">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-                <span>
-                  <span class="mgl-10">{{ data.pname }}</span>
-                  <span class="mgl-10 tips-text">{{ data.pval }}</span>
-                  <el-tag class="mgl-10" v-if="data.ptype==permType.MENU" type="success" size="mini">菜单</el-tag>
-                  <el-tag class="mgl-10" v-else-if="data.ptype==permType.BUTTON" type="warning" size="mini">按钮</el-tag>
-                </span>
-                <el-tooltip v-if="data.ptype==permType.MENU" style="margin-right: 80px;" content="添加按钮权限" placement="top">
-                  <el-button type="text" size="mini" icon="el-icon-plus" @click="handleAddButton(data)"></el-button>
-                </el-tooltip>
-                <span v-if="data.ptype==permType.BUTTON">
-                  <el-tooltip content="更新" placement="top">
-                    <el-button class="update-btn" type="text" size="mini" icon="el-icon-edit" @click="handleUpdateButton(data)"></el-button>
-                  </el-tooltip>
-                  <el-tooltip content="删除" placement="top">
-                    <el-button class="delete-btn" type="text" size="mini" icon="el-icon-delete" @click="handleDeleleButton(data)"></el-button>
-                  </el-tooltip>
-                </span>
-            </span>
-          </el-tree>
-        </el-card>
-      </el-col>
-
-      <!--接口权限树-->
-      <el-col :span="8">
-        <el-card class="box-card">
-          <div slot="header">
-            <div class="title-box">
-              <span><el-tag>接口</el-tag>&nbsp;权限元数据</span>
-              <el-tooltip content="同步接口权限数据" placement="top">
-                <el-button style="font-size: 25px;" type="text" @click="handleSyncApiPermissionData" icon="el-icon-refresh" circle></el-button>
-              </el-tooltip>
-            </div>
-            <span class="tips-text">提示：接口菜单权限由后台定义，不提供任何编辑功能，只能执行将权限数据同步到数据库的操作。
-              接口权限值建议使用前缀&nbsp;<el-tag size="mini" >a:</el-tag>
-            </span>
-          </div>
-          <el-input class="mgb-15" :placeholder="filterPlaceholderText" v-model="filterApiPermText"></el-input>
-          <el-tree ref="apiPermTreeRef" :filter-node-method="filterNode" :data="apiPermissionTree"
-                   :props="treeProps" node-key="pval" default-expand-all :expand-on-click-node="false">
-            <span class="custom-tree-node" slot-scope="{node,data}">
-              <span>
-                <span class="mgl-10">{{ data.pname }}</span>
-                <span class="mgl-10 tips-text">{{ data.pval }}</span>
-                <el-tag class="mgl-10" size="mini">接口</el-tag>
-                <el-tag v-if="!apiPermValSet.has(data.pval)" class="mgl-10" type="danger" size="mini">未同步</el-tag>
-              </span>
-            </span>
-          </el-tree>
-        </el-card>
-      </el-col>
-
+    <!--查询  -->
+    <el-row>
+      <el-input style="width:200px;" v-model="tableQuery.nick" placeholder="昵称"></el-input>
+      <span style="margin-right: 15px;"></span>
+      <el-tooltip class="item" content="搜索" placement="top" >
+        <el-button icon="el-icon-search" circle @click="fetchData(1)" v-perm="'b:user:query'"></el-button>
+      </el-tooltip>
     </el-row>
+    <div style="margin-bottom: 30px;"></div>
+    <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleCreate" v-perm="'b:user:add'">{{textMap.create}}</el-button>
+    <div style="margin-bottom: 30px;"></div>
+    <!--列表-->
+    <el-table style="width: 100%"
+              :data="tableData"
+              v-loading.body="tableLoading"
+              element-loading-text="加载中"
+              border fit highlight-current-row>
+      <el-table-column prop="uid" label="用户id"></el-table-column>
+      <el-table-column prop="uname" label="登录名"></el-table-column>
+      <el-table-column prop="nick" label="昵称"></el-table-column>
+      <el-table-column label="角色">
+        <template slot-scope="scope">
+          <el-tag style="margin: 2px;" v-for="role in scope.row.roleList" :key="role.rid">{{role.rname}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="time" label="创建时间">
+        <template slot-scope="scope">
+          <span v-text="parseTime(scope.row.created,'{y}-{m}-{d}')"></span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="time" label="更新时间">
+        <template slot-scope="scope">
+          <span v-text="parseTime(scope.row.updated,'{y}-{m}-{d}')"></span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-tooltip content="编辑" placement="top">
+            <el-button @click="handleUpdate(scope.$index,scope.row)" size="mini" type="info" icon="el-icon-edit" circle plain></el-button>
+          </el-tooltip>
+          <el-tooltip content="修改角色" placement="top" v-if="!hasAdminRole(scope.row)">
+            <el-button @click="handleUpdateUserRoles(scope.$index,scope.row)" size="mini" type="warning" icon="el-icon-star-off" circle plain></el-button>
+          </el-tooltip>
+          <el-tooltip content="删除" placement="top" v-if="!hasAdminRole(scope.row)">
+            <el-button @click="handleDelete(scope.$index,scope.row)" size="mini" type="danger" icon="el-icon-delete" circle plain></el-button>
+          </el-tooltip>
+          <el-popover trigger="hover" placement="top" v-else style="display: inline-block;">
+            <el-alert type="warning" :closable="false" title="权限说明">
+              <div>为保证管理员在系统中的最高权限</div>
+              <div>不允许编辑管理员自身的角色</div>
+              <div>不允许删除管理员账号</div>
+            </el-alert>
+            <div slot="reference" >
+              <el-tag style="margin-left: 10px;" type="info">权限说明</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div style="margin-bottom: 30px;"></div>
+    <!--分页-->
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="tablePage.current"
+      :page-sizes="[10, 20, 30, 40, 50]"
+      :page-size="tablePage.size"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="tablePage.total">
+    </el-pagination>
+    <!--弹出窗口：新增/编辑用户-->
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="20%">
+      <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="120px">
 
-    <!--弹窗：新增或编辑权限-->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="30%" >
-      <el-form :rules="rules" ref="dataForm" :model="temp" label-position="top">
-        <el-form-item label="权限名" prop="pname">
-          <el-input v-model="temp.pname" placeholder="例如：用户管理、添加用户"></el-input>
+        <el-form-item label="登录名" prop="uname" v-if="dialogStatus=='create'">
+          <el-input v-model="temp.uname"></el-input>
         </el-form-item>
-        <el-form-item label="权限值" prop="pval">
-          <el-input v-model="temp.pval" placeholder="已自动加上前缀'b:'，您只需填剩余部分，如：user:manage、user:add" :disabled="dialogStatus=='updateButton'">
-            <template slot="prepend" v-if="dialogStatus=='addButton'">{{btnPermPrefix}}</template>
-          </el-input>
-          <span class="tips-text" >提示：接口权限值建议使用前缀&nbsp;<el-tag size="mini" type="warning" >b:</el-tag></span>
+
+        <el-form-item label="昵称" prop="nick">
+          <el-input v-model="temp.nick"></el-input>
         </el-form-item>
-        <el-form-item label="父级权限值" prop="parent">
-          <el-input v-model="temp.parent" :disabled="true"></el-input>
+
+        <el-form-item label="密码" prop="pwd">
+          <el-input type="password" v-model="temp.pwd"></el-input>
         </el-form-item>
-        <el-form-item label="权限类型" prop="ptype">
-          <el-select v-model="temp.ptype" v-if="dialogStatus=='updateButton'||dialogStatus=='addButton'" :disabled="true">
-            <el-option label="按钮" :value="permType.BUTTON"></el-option>
-          </el-select>
+
+        <el-form-item label="确认密码" prop="pwd2">
+          <el-input type="password" v-model="temp.pwd2"></el-input>
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='addButton'" type="primary" @click="addButton">确定</el-button>
-        <el-button v-if="dialogStatus=='updateButton'" type="primary" @click="updateButton">确定</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">创建</el-button>
+        <el-button v-else type="primary" @click="updateData">确定</el-button>
+      </div>
+    </el-dialog>
+    <!--弹出窗口：修改用户角色-->
+    <el-dialog title="修改用户的角色" :visible.sync="editRolesDialogVisible" width="30%">
+      <div>
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+        <div style="margin: 15px 0;"></div>
+        <el-checkbox-group v-model="updateUserRolesData.rids">
+          <el-checkbox class="role-checkbox" v-for="role in roleOptions" :label="role.id" :key="role.id">
+            {{role.val}}
+          </el-checkbox>
+        </el-checkbox-group>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editRolesDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="checkUpdateUserRolesData">确定</el-button>
       </div>
     </el-dialog>
 
@@ -132,233 +118,253 @@
 </template>
 
 <script>
-  import tree from '../tree'
+  import optionApi from '@/api/option'
+  import userApi from '@/api/user'
   import { parseTime, resetTemp } from '@/utils'
-  import permApi from '@/api/perm'
-  import {
-    confirm,
-    permType,
-    permTypeMap
-  } from '@/utils/constants'
-  import { asyncRouterMap } from '@/router' // 路由表，定义了菜单和按钮的元数据，可以用来生成权限控制的菜单按钮树
+  import { root, confirm, pageParamNames } from '@/utils/constants'
   import debounce from 'lodash/debounce'
 
   export default {
-    name: 'PermManage',
+
+    name: 'UserManage',
+
     data() {
-      return {
-
-        btnPermPrefix: 'b:',
-
-        filterPlaceholderText: '输入权限名称、权限值过滤',
-
-        menuPermValSet: new Set(),
-        apiPermValSet: new Set(),
-
-        btnPermMap: {}, // 按parent字段分组的map
-
-        menuPermissionTree: [], // 菜单权限树
-        buttonPermissionTree: [], // 菜单权限树
-        apiPermissionTree: [], // 菜单权限树
-
-        filterMenuPermText: '',
-        filterButtonPermText: '',
-        filterApiPermText: '',
-
-        permType,
-
-        treeProps: {
-          label: 'pname',
-          children: 'children'
-        },
-
-        dialogFormVisible: false,
-        dialogStatus: '',
-        textMap: {
-          addButton: '添加按钮权限',
-          updateButton: '更新按钮权限',
-          deleteButton: '删除按钮权限'
-        },
-        temp: {
-          idx: null,
-          pid: null,
-          pname: null,
-          ptype: null,
-          pval: null,
-          leaf: null,
-          parent: null
-        },
-        rules: {
-          pname: [{ required: true, message: '必填', trigger: 'blur' }],
-          ptype: [{ required: true, message: '必填', trigger: 'blur' }],
-          pval: [{ required: true, message: '必填', trigger: 'change' }]
+      const validateName = (rule, value, callback) => {
+        if (this.dialogStatus === 'create' && value === '') {
+          callback(new Error('必填'))
+        } else {
+          callback()
         }
       }
-    },
-    watch: {
-      'filterMenuPermText': debounce(function(val) {
-        this.$refs.menuPermTreeRef.filter(val)
-      }, 600),
-      'filterButtonPermText': debounce(function(val) {
-        this.$refs.buttonPermTreeRef.filter(val)
-      }, 600),
-      'filterApiPermText': debounce(function(val) {
-        this.$refs.apiPermTreeRef.filter(val)
-      }, 600)
+
+      const validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        } else {
+          if (this.temp.pwd2 !== '') {
+            this.$refs.dataForm.validateField('pwd2')
+          }
+          callback()
+        }
+      }
+
+      const validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'))
+        } else if (value !== this.temp.pwd) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      }
+
+      return {
+        parseTime: parseTime,
+        tableLoading: false,
+        tableData: [],
+        tableQuery: {
+          nick: null
+        },
+        tablePage: {
+          current: null,
+          pages: null,
+          size: null,
+          total: null
+        },
+        dialogFormVisible: false,
+        editRolesDialogVisible: false,
+        dialogStatus: '',
+        temp: {
+          idx: null, // tableData中的下标
+          uid: null,
+          uname: null,
+          nick: null,
+          pwd: null,
+          pwd2: null,
+          created: null,
+          updated: null
+        },
+        textMap: {
+          update: '编辑用户',
+          create: '新增用户'
+        },
+        rules: {
+          uname: [{ validator: validateName, trigger: 'blur' }],
+          pwd: [{ validator: validatePass, trigger: 'blur' }],
+          pwd2: [{ validator: validatePass2, trigger: 'change' }]
+        },
+        checkAll: false,
+        isIndeterminate: true,
+        // 所有角色(管理员除外)
+        roleOptions: [],
+        roleMap: new Map(),
+        // 更新用户的角色的数据
+        updateUserRolesData: {
+          idx: null,
+          uid: null,
+          rids: []
+        }
+      }
     },
 
     created() {
       this.initData()
+      this.fetchData()
     },
+
+    watch: {
+      // 延时查询
+      'tableQuery.nick': debounce(function() {
+        this.fetchData()
+      }, 500)
+    }, // watch
 
     methods: {
 
-      // 获取后台权限数据
       initData() {
-        permApi.listAllPermissions().then(res => {
-          // 按parent分组的按钮权限
-          this.btnPermMap = res.data.btnPermMap || {}
-          // 含有所有权限map，key是ptype
-          const permMap = res.data.permMap || {}
-          // 后台存储的所有菜单权限，用于比较前后台数据是否同步
-          const menuPermList = permMap[permType.MENU] || []
-          this.menuPermValSet = new Set(menuPermList.map(p => p.pval))
-          // 后台存储的所有接口权限，用于比较数据是否同步
-          const apiPermList = permMap[permType.API] || []
-          this.apiPermValSet = new Set(apiPermList.map(p => p.pval))
-          // 显示菜单权限树
-          this.menuPermissionTree = tree.generateMenuPermissionTree()
-          // 显示按钮权限树
-          const menuPermissionTreeCopy = tree.generateMenuPermissionTree()
-          this.buttonPermissionTree = this.generateButtonPermissionTree(menuPermissionTreeCopy)
-          // 显示接口权限树
-          this.loadApiButtonPermissionTree()
-        })
-      },
-
-      /**
-       * 过滤节点
-       */
-      filterNode(value, data) {
-        if (!value) return true
-        return data.pname.indexOf(value) !== -1 || data.pval.indexOf(value) !== -1
-      },
-
-      /**
-       * 添加按钮权限
-       */
-      handleAddButton(data) {
-        this.dialogStatus = 'addButton'
-        resetTemp(this.temp)
-        this.temp.ptype = permType.BUTTON
-        this.temp.parent = data.pval
-        this.dialogFormVisible = true
-        this.$nextTick(() => this.$refs['dataForm'].clearValidate())
-      },
-      addButton() {
-        this.$refs['dataForm'].validate((valid) => {
-          if (!valid) return
-          const data = Object.assign({}, this.temp)// copy obj
-          data.pval = this.btnPermPrefix + data.pval
-          permApi.addPerm(data).then(() => {
-            this.dialogFormVisible = false
-            this.initData()
-            this.$message.success('添加按钮权限成功')
+        // 所有角色选项
+        optionApi.listRoleOptions().then(res => {
+          res.data.options.forEach(obj => {
+            if (obj.val2 !== root.rval) { // 排除管理员
+              this.roleOptions.push(obj)
+              this.roleMap.set(obj.id, obj.val)
+            }
           })
         })
       },
 
-      /**
-       * 更新按钮权限
-       */
-      handleUpdateButton(data) {
-        this.dialogStatus = 'updateButton'
-        this.temp = Object.assign({}, data) // copy obj
+      hasAdminRole(row) {
+        if (row && row.roleList) {
+          return row.roleList.some(role => role.rval === root.rval)
+        }
+        return false
+      },
+
+      // 全选
+      handleCheckAllChange(val) {
+        const allRids = this.roleOptions.map(role => role.id)
+        this.updateUserRolesData.rids = val ? allRids : []
+        this.isIndeterminate = false
+      },
+
+      // 分页
+      handleSizeChange(val) {
+        this.tablePage.size = val
+        this.fetchData()
+      },
+      handleCurrentChange(val) {
+        this.tablePage.current = val
+        this.fetchData()
+      },
+
+      // 查询
+      fetchData(current) {
+        if (current) {
+          this.tablePage.current = current
+        }
+        this.tableLoading = true
+        userApi.queryUser(this.tableQuery, this.tablePage).then(res => {
+          this.tableData = res.data.page.records
+          this.tableLoading = false
+          pageParamNames.forEach(name => this.$set(this.tablePage, name, res.data.page[name]))
+        })
+      },
+
+      // 更新
+      handleUpdate(idx, row) {
+        this.temp = Object.assign({}, row) // copy obj
+        this.temp.idx = idx
+        this.temp.pwd = null
+        this.temp.pwd2 = null
+        this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => this.$refs['dataForm'].clearValidate())
       },
-      updateButton() {
+      updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (!valid) return
-          const data = Object.assign({}, this.temp)// copy obj
-          permApi.updatePerm(data).then(res => {
+          const tempData = Object.assign({}, this.temp)// copy obj
+          userApi.updateUser(tempData).then(res => {
+            tempData.updated = res.data.updated
+            this.tableData.splice(tempData.idx, 1, tempData)
             this.dialogFormVisible = false
-            this.initData()
-            this.$message.success('更新按钮权限成功')
+            this.$message.success('更新成功')
           })
         })
       },
 
-      /**
-       * 删除按钮权限
-       */
-      handleDeleleButton(data) {
-        this.$confirm('您确定要永久删除该权限？', '提示', confirm).then(() => {
-          permApi.deletePerm({ pval: data.pval }).then(() => {
-            this.initData()
-            this.$message.success('删除按钮权限成功')
+      // 更新用户的角色
+      handleUpdateUserRoles(idx, row) {
+        // 显示用户的角色
+        this.updateUserRolesData = {
+          idx: idx,
+          uid: row.uid,
+          rids: row.roleList.map(role => role.rid)
+        }
+        // 显示弹窗
+        this.editRolesDialogVisible = true
+      },
+
+      checkUpdateUserRolesData() {
+        const noRolesSelected = this.updateUserRolesData && this.updateUserRolesData.rids && this.updateUserRolesData.rids.length === 0
+        if (noRolesSelected) {
+          this.$confirm('当前没有选中任何角色，会清除该用户已有的角色, 是否继续?', '提示', confirm).then(() => {
+            this.invokeUpdateUserRolesApi()
+          }).catch(() => {
+            this.$message('已取消编辑用户角色')
+          })
+        } else {
+          this.invokeUpdateUserRolesApi()
+        }
+      },
+
+      invokeUpdateUserRolesApi() {
+        userApi.updateUserRoles(this.updateUserRolesData).then(res => {
+          const newRoles = this.updateUserRolesData.rids.map(rid => {
+            const rname = this.roleMap.get(rid)
+            if (rname) return { rid, rname }
+          })
+          this.tableData[this.updateUserRolesData.idx].roleList = newRoles
+          this.editRolesDialogVisible = false
+          this.$message.success('更新成功')
+        })
+      },
+
+      // 删除
+      handleDelete(idx, row) {
+        this.$confirm('您确定要永久删除该用户？', '提示', confirm).then(() => {
+          userApi.deleteUser({ uid: row.uid }).then(res => {
+            this.tableData.splice(idx, 1)
+            --this.tablePage.total
+            this.dialogFormVisible = false
+            this.$message.success('删除成功')
           })
         }).catch(() => {
-          this.$message({ type: 'info', message: '已取消删除' })
+          this.$message.info('已取消删除')
         })
       },
 
-      /**
-       * 从服务器端加载接口权限树
-       */
-      loadApiButtonPermissionTree() {
-        permApi.listApiPermMetadata().then(res => {
-          this.apiPermissionTree = res.data.apiList
+      // 新增
+      handleCreate() {
+        resetTemp(this.temp)
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
         })
       },
-
-      /**
-       * 递归生成按钮权限树
-       */
-      generateButtonPermissionTree(menuPermissionTreeCopy) {
-        return tree.mapToButtonPermissionTree(this.btnPermMap, menuPermissionTreeCopy)
-      },
-
-      // //////////////普通用户修改密码的页面和接口！！！！
-
-      /**
-       * 同步菜单权限数据
-       */
-      handleSyncMenuPermissionData() {
-        const list = []
-        this.permissionTreeToList(list, this.menuPermissionTree)
-        permApi.syncMenuPerms(list).then(res => {
-          this.initData()
-          this.$message.success('菜单权限数据同步成功')
-        })
-      },
-
-      /**
-       * 同步接口权限数据
-       */
-      handleSyncApiPermissionData() {
-        const list = []
-        this.permissionTreeToList(list, this.apiPermissionTree)
-        permApi.syncApiPerms(list).then(res => {
-          this.initData()
-          this.$message.success('接口权限数据同步成功')
-        })
-      },
-
-      /**
-       * 菜单权限树转换成列表形式
-       */
-      permissionTreeToList(list, tree) {
-        tree.forEach(perm => {
-          const temp = Object.assign({}, perm)
-          temp.children = []
-          if (perm.children && perm.children.length > 0) {
-            temp.leaf = false
-            this.permissionTreeToList(list, perm.children)
-          } else {
-            temp.leaf = true
-          }
-          list.push(temp)
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (!valid) return
+          userApi.addUser(this.temp).then((res) => {
+            this.temp.uid = res.data.uid// 后台传回来新增记录的id
+            this.temp.created = res.data.created// 后台传回来新增记录的时间
+            this.temp.roleList = []
+            this.tableData.unshift(Object.assign({}, this.temp))
+            ++this.tablePage.total
+            this.dialogFormVisible = false
+            this.$message.success('添加成功')
+          })
         })
       }
 
@@ -367,72 +373,8 @@
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .text {
-    font-size: 14px;
+  .role-checkbox{
+    margin-left: 0px;
+    margin-right: 15px;
   }
-
-  .item {
-    margin-bottom: 18px;
-  }
-
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-
-  .clearfix:after {
-    clear: both
-  }
-
-  .box-card {
-    width: 100%;
-  }
-
-  .custom-tree-node {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
-  }
-
-  .card-title {
-    line-height: 50px;
-    height: 50px;
-  }
-
-  .tips-text {
-    font-size: 14px;
-    color: #909399;
-  }
-
-  .title-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    span {
-      font-size: 22px;
-    }
-  }
-
-  .update-btn {
-    margin-left: 20px;
-  }
-
-  .delete-btn {
-    margin-left: 20px;
-    color: #F56C6C;
-  }
-
-  .mgl-10 {
-    margin-left: 10px;
-  }
-
-  .mgb-15 {
-    margin-bottom: 15px;
-  }
-
-
 </style>

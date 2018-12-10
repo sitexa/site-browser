@@ -50,13 +50,13 @@
                 <span>
                   <span class="mgl-10">{{ data.pname }}</span>
                   <span class="mgl-10 tips-text">{{ data.pval }}</span>
-                  <el-tag class="mgl-10" v-if="data.ptype==permType.MENU" type="success" size="mini">菜单</el-tag>
-                  <el-tag class="mgl-10" v-else-if="data.ptype==permType.BUTTON" type="warning" size="mini">按钮</el-tag>
+                  <el-tag class="mgl-10" v-if="data.ptype===permType.MENU" type="success" size="mini">菜单</el-tag>
+                  <el-tag class="mgl-10" v-else-if="data.ptype===permType.BUTTON" type="warning" size="mini">按钮</el-tag>
                 </span>
-                <el-tooltip v-if="data.ptype==permType.MENU" style="margin-right: 80px;" content="添加按钮权限" placement="top">
+                <el-tooltip v-if="data.ptype===permType.MENU" style="margin-right: 80px;" content="添加按钮权限" placement="top">
                   <el-button type="text" size="mini" icon="el-icon-plus" @click="handleAddButton(data)"></el-button>
                 </el-tooltip>
-                <span v-if="data.ptype==permType.BUTTON">
+                <span v-if="data.ptype===permType.BUTTON">
                   <el-tooltip content="更新" placement="top">
                     <el-button class="update-btn" type="text" size="mini" icon="el-icon-edit" @click="handleUpdateButton(data)"></el-button>
                   </el-tooltip>
@@ -107,8 +107,8 @@
           <el-input v-model="temp.pname" placeholder="例如：用户管理、添加用户"></el-input>
         </el-form-item>
         <el-form-item label="权限值" prop="pval">
-          <el-input v-model="temp.pval" placeholder="已自动加上前缀'b:'，您只需填剩余部分，如：user:manage、user:add" :disabled="dialogStatus=='updateButton'">
-            <template slot="prepend" v-if="dialogStatus=='addButton'">{{btnPermPrefix}}</template>
+          <el-input v-model="temp.pval" placeholder="已自动加上前缀'b:'，您只需填剩余部分，如：user:manage、user:add" :disabled="dialogStatus==='updateButton'">
+            <template slot="prepend" v-if="dialogStatus==='addButton'">{{btnPermPrefix}}</template>
           </el-input>
           <span class="tips-text" >提示：接口权限值建议使用前缀&nbsp;<el-tag size="mini" type="warning" >b:</el-tag></span>
         </el-form-item>
@@ -116,15 +116,15 @@
           <el-input v-model="temp.parent" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="权限类型" prop="ptype">
-          <el-select v-model="temp.ptype" v-if="dialogStatus=='updateButton'||dialogStatus=='addButton'" :disabled="true">
+          <el-select v-model="temp.ptype" v-if="dialogStatus==='updateButton'||dialogStatus==='addButton'" :disabled="true">
             <el-option label="按钮" :value="permType.BUTTON"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='addButton'" type="primary" @click="addButton">确定</el-button>
-        <el-button v-if="dialogStatus=='updateButton'" type="primary" @click="updateButton">确定</el-button>
+        <el-button v-if="dialogStatus==='addButton'" type="primary" @click="addButton">确定</el-button>
+        <el-button v-if="dialogStatus==='updateButton'" type="primary" @click="updateButton">确定</el-button>
       </div>
     </el-dialog>
 
