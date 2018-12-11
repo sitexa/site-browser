@@ -74,7 +74,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="20%">
       <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="120px">
 
-        <el-form-item label="登录名" prop="uname" v-if="dialogStatus=='create'">
+        <el-form-item label="登录名" prop="uname" v-if="dialogStatus==='create'">
           <el-input v-model="temp.uname"></el-input>
         </el-form-item>
 
@@ -93,7 +93,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">创建</el-button>
+        <el-button v-if="dialogStatus==='create'" type="primary" @click="createData">创建</el-button>
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
     </el-dialog>

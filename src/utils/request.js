@@ -36,7 +36,7 @@ service.interceptors.response.use(
       // 如果后台返回的json显示成功，pass
       return res
     } else {
-      if (res.data.code == Code.UNAUTHEN || res.data.code == Code.SESSION_TIMOUT) {
+      if (res.data.code === Code.UNAUTHEN || res.data.code === Code.SESSION_TIMOUT) {
         // 处理登录相关的错误
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出',
           { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
@@ -57,8 +57,8 @@ service.interceptors.response.use(
    */
   err => {
     console.error('request err: %o', err)// for debug
-    Message({ message: error.message, type: 'error', duration: 5000 })
-    return Promise.reject(error)
+    Message({ message: err.message, type: 'error', duration: 5000 })
+    return Promise.reject(err)
   }
 
 )
