@@ -2,3 +2,6 @@
   add router and menu
   add org_manage page
   merge edit_router branch to master.
+
+2018-12-12
+  add Orgtree.vue, 还不能生成树。router切换到index.vue

@@ -9,7 +9,7 @@ export default{
     // 预处理
     const routeArr = asyncRouterMap.map(route => {
       const temp = Object.assign({}, route) // copy obj
-      if (!temp.alwaysShow && temp.children && temp.children.length == 1) {
+      if (!temp.alwaysShow && temp.children && temp.children.length === 1) {
         // 如果是只有一个子菜单的顶级菜单，把子级的菜单meta复制到父级用于生成菜单树时显示菜单名称
         temp.meta = temp.children[0].meta
         temp.children = []
@@ -71,7 +71,7 @@ export default{
         if (!perm.children) {
           perm.children = []
         }
-        if (perm.ptype == permType.MENU) {
+        if (perm.ptype === permType.MENU) {
           const btnPerms = btnPermMap[perm.pval]
           if (btnPerms) {
             btnPerms.forEach(p => {

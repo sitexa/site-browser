@@ -38,5 +38,18 @@ export default {
       method: 'post',
       data
     })
+  },
+  queryOrgChildren(data) {
+    return request({
+      url: '/sys_org/tree',
+      method: 'post',
+      data
+    })
+  },
+  getTop() {
+    return request({
+      url: '/sys_org/top',
+      method: 'get'
+    })
   }
 }
