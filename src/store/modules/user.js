@@ -79,9 +79,9 @@ const user = {
           if (!res) reject('res is null')
           if (!res.data) reject('res.data is null')
           if (!res.data.perms ||
-            res.data.perms.length == 0 ||
+            res.data.perms.length === 0 ||
             !res.data.perms ||
-            res.data.perms.length == 0) {
+            res.data.perms.length === 0) {
             commit('SET_VISITOR', true)
           } else {
             commit('SET_VISITOR', false)
